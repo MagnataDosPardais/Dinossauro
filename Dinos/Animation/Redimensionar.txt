@@ -1,0 +1,1 @@
+New = (Largura/4),(Altura-10)
