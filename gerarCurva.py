@@ -33,7 +33,7 @@ for l in range(230,700,25):
 		pyautogui.press("enter")
 		#time.sleep(0.5)
 		pyautogui.press("enter")
-	angle[0] -= 2.37
+	angle[0] += 2.37
 	print(angle[0])
 
 pyautogui.alert("Tudo pronto!")

@@ -9,10 +9,8 @@ pygame.init()
 pygame.font.init()
 
 Window = pygame.display.set_mode([1280,600],pygame.FULLSCREEN)
-dinoSprite = pygame.image.load("Dinos/DinoESSE.png")#.convert_alpha()
 #imageSize = [70,[616,360]]
 #imageSize = [imageSize[0],int(imageSize[0]*(imageSize[1][0]/imageSize[1][1]))]
-dinoSprite = pygame.transform.scale(dinoSprite,(103,60))#616,360(imageSize[1],imageSize[0])
 		
 
 mapVetor = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -33,7 +31,7 @@ while True:
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_ESCAPE:
 				os.system("cls")
-				print(mapVetor)
+				print(str(mapVetor).replace(' ',''))
 				pygame.quit()
 				exit()
 		if event.type == pygame.MOUSEBUTTONDOWN:
@@ -75,6 +73,10 @@ while True:
 	pygame.draw.rect(Window,(255,0,0),[pX*96+91,pY*96,5,96])
 	pygame.draw.rect(Window,(255,0,0),[pX*96,pY*96+91,96,5])
 	pygame.draw.rect(Window,(255,0,0),[pX*96,pY*96,5,96])
-	
-
+	ind1 = pygame.font.SysFont("Consolas",16,bold=True)
+	ind1 = ind1.render(f"X:{pX}; Y:{pY}",True,(255,255,255))
+	ind2 = pygame.font.SysFont("Consolas",16,bold=True)
+	ind2 = ind2.render(f"Bloco:{block}",True,(255,255,255))
+	Window.blit(ind1,(10,5))
+	Window.blit(ind2,(10,20))
 	pygame.display.update()
