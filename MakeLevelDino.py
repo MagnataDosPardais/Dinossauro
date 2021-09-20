@@ -1,7 +1,7 @@
 """ chrome://dino/ """
 
 import pygame
-import os
+#import os
 #import math
 #import typing
 
