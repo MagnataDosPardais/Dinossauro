@@ -900,7 +900,7 @@ def level(db):
 	selectMap = []
 	pos = [0,0]
 	bgRGB = [(8,8,8),(53,53,53),(165,165,165),(231,231,231),(80,10,170),(0,24,75),(0,130,160)]
-	mp = 1
+	mp = lev
 	nMaps = db.readValueByKey([f"LV{mp}","bg"])
 	for button in range(maxButtonsMap):
 		selectMap.append([255,255,255])
