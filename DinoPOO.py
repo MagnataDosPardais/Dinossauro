@@ -39,7 +39,7 @@ infoSettings = [
 	[True,False],
 	[False,True],
 ]
-lev = 1
+lev = 2
 
 def menu():
 	global lev
@@ -50,30 +50,30 @@ def menu():
 		select.append([255,255,255])
 	while True:
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if(event.type == pygame.QUIT):
 				pygame.quit()
 				exit()
-			if event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_ESCAPE:
+			if(event.type == pygame.KEYDOWN):
+				if(event.key == pygame.K_ESCAPE):
 					pygame.quit()
 					exit()
-				if event.key == pygame.K_UP:
+				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acInd -= 1
 					if(acInd < 0): acInd = maxButtonsMenu-1
-				if event.key == pygame.K_DOWN:
+				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acInd += 1
 					if(acInd > maxButtonsMenu-1): acInd = 0
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 0:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 0:
 					game(lev,dataBank.readValues(),infoSettings,indInfoSettings,[180,420])
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 1:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 1:
 					settings()
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 2:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 2:
 					lev = level(dataBank)
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 3:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 3:
 					tutorial()
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 4:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 4:
 					credits()
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 5:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 5:
 					pygame.quit()
 					exit()
 		
@@ -132,22 +132,22 @@ def game(lv,db,data,stg,pSet):
 				menu()
 			elif(not(runPL)):
 				for event in pygame.event.get():
-					if event.type == pygame.QUIT:
+					if(event.type == pygame.QUIT):
 						pygame.quit()
 						exit()
-					if event.type == pygame.KEYDOWN:
-						if event.key == pygame.K_ESCAPE:
+					if(event.type == pygame.KEYDOWN):
+						if(event.key == pygame.K_ESCAPE):
 							pygame.quit()
 							exit()
-						if event.key == pygame.K_UP:
+						if(event.key == pygame.K_UP or event.key == pygame.K_w):
 							acInd -= 1
 							if(acInd < 0): acInd = maxButtonsPL-1
-						if event.key == pygame.K_DOWN:
+						if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 							acInd += 1
 							if(acInd > maxButtonsPL-1): acInd = 0
-						if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 0:
+						if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 0:
 							game(lev,dataBank.readValues(),infoSettings,indInfoSettings,[180,420])
-						if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acInd == 1:
+						if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 1:
 							runLve = False
 				
 				Window.fill([80,10,170])
@@ -302,7 +302,7 @@ def game(lv,db,data,stg,pSet):
 	class Scenary:
 		"""docstring for Walls"""
 		def __init__(self,mapLevel):
-			self.pos = [200,0] #-9500
+			self.pos = [200,0]#163,189
 			self.speed = 0
 			self.blocks = []
 			self.listWalls = []
@@ -376,12 +376,10 @@ def game(lv,db,data,stg,pSet):
 									self.collD[1].append(pygame.draw.rect(Window,(0,255,0),[self.pos[0]+(xG*96)+a,self.pos[1]+(yG*96)+a,5,5]))
 								self.collH[1].append(pygame.draw.line(Window,(0,255,0),[self.pos[0]+(xG*96),self.pos[1]+((yG+1)*96)],[self.pos[0]+((xG+1)*96),self.pos[1]+((yG+1)*96)],5))
 								self.collV.append(pygame.draw.line(Window,(0,255,0),[self.pos[0]+(xG*96),self.pos[1]+(yG*96)],[self.pos[0]+(xG*96),self.pos[1]+((yG+1)*96)],5))
-								#coll[pixel-1].append(pygame.draw.line(Window,(0,255,0),[xG*96,yG*96],[xG*96,(yG+1)*96],5))
 							elif(pixel == 9 or pixel == 13):
 								for a in range(0,96):
 									self.collD[2].append(pygame.draw.rect(Window,(0,255,0),[self.pos[0]+(xG*96)+a,self.pos[1]+(yG*96)+a,5,5]))
 								self.collH[0].append(pygame.draw.line(Window,(0,255,0),[self.pos[0]+(xG*96),self.pos[1]+(yG*96)],[self.pos[0]+((xG+1)*96),self.pos[1]+(yG*96)],5))
-								#coll[pixel-1].append(pygame.draw.line(Window,(0,255,0),[xG*96,yG*96],[xG*96,(yG+1)*96],5))
 							elif(pixel == 15):
 								self.collH[2].append(pygame.draw.line(Window,(255,0,0),[self.pos[0]+(xG*96),self.pos[1]+(yG*96)+18],[self.pos[0]+((xG+1)*96),self.pos[1]+(yG*96)+18],5))
 								self.collV.append(pygame.draw.line(Window,(0,255,0),[self.pos[0]+(xG*96)+3,self.pos[1]+(yG*96)],[self.pos[0]+(xG*96)+3,self.pos[1]+((yG+1)*96)-1],5))
@@ -417,23 +415,12 @@ def game(lv,db,data,stg,pSet):
 
 		def setBarreir(self,probC):
 			self.bar = []
-			#print(probC)
-			#print("------------------------------------------")
 			for i in range(0,len(probC)):
 				self.bar.append([f"{probC[i][0]}{random.randint(1,2)}",random.choice(probC[i][1]),random.randint(0,29)])
-			#	print(f"F{i}={self.bar[i]}")
-			#	print(f"------------------------------------------")
 			return(self.bar)
 
 		def drawBarreir(self,p):
 			for b in self.bar:
-				#print(f"{b[0][0]+2} > {(-self.pos[0]//96)+p//96} and {b[0][0]+15} < {(-self.pos[0]//96)+p//96}")
-				#pygame.draw.rect(Window,(255,0,0),[self.pos[0]+b[1][0]*96,b[1][1]*96,96,5])
-				#pygame.draw.rect(Window,(255,0,0),[self.pos[0]+b[1][0]*96+91,b[1][1]*96,5,96])
-				#pygame.draw.rect(Window,(255,0,0),[self.pos[0]+b[1][0]*96,b[1][1]*96+91,96,5])
-				#pygame.draw.rect(Window,(255,0,0),[self.pos[0]+b[1][0]*96,b[1][1]*96,5,96])
-				#print("Rearrenge: {};{};{}".format(b,b[2],self.msh[0]))
-				#b = ['B2', (5, 5, 1), 51]
 				if((b[1][0]+6 > (-self.pos[0]//96)+p//96) and ((b[1][0]-10 < (-self.pos[0]//96)+p//96))):
 					if(b[0] == 'B1'):
 						if(b[1][2] == 0):
@@ -523,8 +510,6 @@ def game(lv,db,data,stg,pSet):
 						if(b[1][2] == 0): Window.blit(self.msh[2][1],(self.pos[0]+b[1][0]*96+b[2],b[1][1]*96-8+(b[1][1]*1.03)))
 						if(b[1][2] == 1): Window.blit(self.msh[2][1],(self.pos[0]+b[1][0]*96+b[2],(b[1][1]-1)*96+70))
 						if(b[1][2] == 2): Window.blit(self.msh[2][1],(self.pos[0]+b[1][0]*96+b[2],b[1][1]*96+22-(b[1][1]*1.03)))
-			#[[(),(),()],[(),()],[(),(),()]]
-			#lista{barreiras{coordenadasPossíveis{}}}
 
 		def win(self,marg):
 			return(self.pos[0] <= (-len(self.mapLevel[0])+marg)*96)
@@ -533,7 +518,6 @@ def game(lv,db,data,stg,pSet):
 			return(self.speed)
 
 		def drawFlag(self,indXY):
-			#if(len(self.mapLevel[0])):
 			Window.blit(self.flgImg[int(self.indFlag)],(self.pos[0]+indXY[0]*96+45,indXY[1]*96-60))
 			self.indFlag += 0.5
 			if(self.indFlag > 3): self.indFlag = 0
@@ -613,14 +597,13 @@ def game(lv,db,data,stg,pSet):
 	ply = True
 
 	while(run):
-		#print(f"{w.pos[0]} <= {(-len(w.mapLevel[0])+12)*96}")
 		if(not(w.win(11)) and ply):
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				if(event.type == pygame.QUIT):
 					pygame.quit()
 					exit()
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_ESCAPE:
+				if(event.type == pygame.KEYDOWN):
+					if(event.key == pygame.K_ESCAPE):
 						levelPass = False
 						ply = False
 						
@@ -781,7 +764,6 @@ def game(lv,db,data,stg,pSet):
 					dataBank.saveValueByKey(["gSystem","unlckLevel"],newLevel)
 			passLevel(levelPass,mBehav)
 			
-
 def settings():
 	maxButtonsSettings = 7
 	runSettings = True
@@ -791,62 +773,62 @@ def settings():
 		selectSettings.append([255,255,255])
 	while(runSettings):
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if(event.type == pygame.QUIT):
 				pygame.quit()
 				exit()
-			if event.type == pygame.KEYDOWN:
-				if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndSettings == 6) or event.key == pygame.K_ESCAPE):
+			if(event.type == pygame.KEYDOWN):
+				if((((event.key == pygame.K_LEFT or event.key == pygame.K_a) or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndSettings == 6) or event.key == pygame.K_ESCAPE):
 					runSettings = False
 					dataBank.saveValueByKey(["gSystem","Settings"],indInfoSettings)
 
 
-				if event.key == pygame.K_UP:
+				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acIndSettings -= 1
 					if(acIndSettings < 0): acIndSettings = maxButtonsSettings-1
-				if event.key == pygame.K_DOWN:
+				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acIndSettings += 1
 					if(acIndSettings > maxButtonsSettings-1): acIndSettings = 0
 				
 				if(acIndSettings == 0):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[0] -= 1
 						if(indInfoSettings[0] < 0): indInfoSettings[0] = 6
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[0] += 1
 						if(indInfoSettings[0] > 6): indInfoSettings[0] = 0
 				if(acIndSettings == 1):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[1] -= 1
 						if(indInfoSettings[1] < 0): indInfoSettings[1] = 3
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[1] += 1
 						if(indInfoSettings[1] > 3): indInfoSettings[1] = 0
 				if(acIndSettings == 2):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[2] -= 1
 						if(indInfoSettings[2] < 0): indInfoSettings[2] = 1
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[2] += 1
 						if(indInfoSettings[2] > 1): indInfoSettings[2] = 0
 				if(acIndSettings == 3):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[3] -= 1
 						if(indInfoSettings[3] < 0): indInfoSettings[3] = 1
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[3] += 1
 						if(indInfoSettings[3] > 1): indInfoSettings[3] = 0
 				if(acIndSettings == 4):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[4] -= 1
 						if(indInfoSettings[4] < 0): indInfoSettings[4] = 1
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[4] += 1
 						if(indInfoSettings[4] > 1): indInfoSettings[4] = 0
 				if(acIndSettings == 5):
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						indInfoSettings[5] -= 1
 						if(indInfoSettings[5] < 0): indInfoSettings[5] = 1
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						indInfoSettings[5] += 1
 						if(indInfoSettings[5] > 1): indInfoSettings[5] = 0
 
@@ -906,36 +888,36 @@ def level(db):
 		selectMap.append([255,255,255])
 	while(runMap):
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if(event.type == pygame.QUIT):
 				pygame.quit()
 				exit()
-			if event.type == pygame.KEYDOWN:
-				if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndMap == 2) or event.key == pygame.K_ESCAPE):
+			if(event.type == pygame.KEYDOWN):
+				if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndMap == 2) or event.key == pygame.K_ESCAPE):
 					runMap = False
-				if event.key == pygame.K_UP:
+				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acIndMap -= 1
 					if(acIndMap < 0): acIndMap = maxButtonsMap-1
-				if event.key == pygame.K_DOWN:
+				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acIndMap += 1
 					if(acIndMap > maxButtonsMap-1): acIndMap = 0
 
 				if(acIndMap == 0):
-					if event.key == pygame.K_LEFT:
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						pos[0] = 0
 						mp -= 1
 						if(mp < 1): mp = 3
-					if event.key == pygame.K_RIGHT:
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						pos[0] = 0
 						mp += 1
 						if(mp > 3): mp = 1
 		
 		key = pygame.key.get_pressed()
-		if(key[pygame.K_LEFT] and (acIndMap == 1) and (mp in db.readValueByKey(["gSystem","unlckLevel"]))):
+		if((key[pygame.K_LEFT] or key[pygame.K_a]) and (acIndMap == 1) and (mp in db.readValueByKey(["gSystem","unlckLevel"]))):
 			pos[0] += 30
 			if(pos[0] >= 0):
 				pos[0] = 0
 			pygame.time.delay(75)
-		if(key[pygame.K_RIGHT] and (acIndMap == 1) and (mp in db.readValueByKey(["gSystem","unlckLevel"]))):
+		if(key[pygame.K_RIGHT] or key[pygame.K_d] and (acIndMap == 1) and (mp in db.readValueByKey(["gSystem","unlckLevel"]))):
 			pos[0] -= 30
 			if(pos[0] <= (-len(db.readValueByKey([f"LV{mp}","bg"])[0])+16)*30):
 				pos[0] = (-len(db.readValueByKey([f"LV{mp}","bg"])[0])+16)*30
@@ -1001,36 +983,37 @@ def tutorial():
 		runCtrl = True
 		sld = 0
 		videos = []
-		for n in [["Jump",0],["Down",1],["Squat",2]]:
+		for n in [["Jump",0],["Down",1],["Squat",2],["Spike",3],["SpikeT",4]]:#
 			videos.append([])
-			for f in range(11):
-				videos[n[1]].append(f"XYZ/{n[0]}-{f}")
-		print(videos)
+			print(n[0])
+			for f in range(0,30):
+				try: videos[n[1]].append(pygame.transform.scale(pygame.image.load(f"Video-Tutorial/Controls/{n[0]}-{f}.jpg"),[298,230]))
+				except: pass
 		rgb = [(45,0,54),(255,255,255)]
 		videoInd = 0
 		back = 0
 		while(runCtrl):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				if(event.type == pygame.QUIT):
 					pygame.quit()
 					exit()
-				if event.type == pygame.KEYDOWN:
-					if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
+				if(event.type == pygame.KEYDOWN):
+					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runCtrl = False
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						if(back): runCtrl = False
 						else:
 							sld -= 1
 							videoInd = 0
-							if(sld < 0): sld = 2
-					if(event.key == pygame.K_RIGHT):
+							if(sld < 0): sld = 4
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						if(back): runCtrl = False
 						else:
 							sld += 1
 							videoInd = 0
-							if(sld > 2): sld = 0
-					if(event.key == pygame.K_UP or event.key == pygame.K_DOWN):
+							if(sld > 4): sld = 0
+					if(event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_DOWN or event.key == pygame.K_s):
 						back = not(back)
 
 
@@ -1038,7 +1021,10 @@ def tutorial():
 			tit = tit.render(f"<Controls>",True,(255,255,255))
 			Window.blit(tit,(1280/2-tit.get_width()/2,50))
 
-			pygame.draw.rect(Window,(0,255,0),[(1280/2-340/2),300,340,220])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,5,240])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300+230,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)+298,300-5,5,240])
 			if(sld == 0):
 				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
 				subTit = subTit.render(f"<Jump>",True,rgb[back])
@@ -1046,7 +1032,6 @@ def tutorial():
 				ans = pygame.font.SysFont("VCR OSD Mono",22,)
 				ans = ans.render(f"Button: W or ↑",True,rgb[back])
 				Window.blit(ans,(1280/2-ans.get_width()/2,250))
-
 			if(sld == 1):
 				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
 				subTit = subTit.render(f"<Down>",True,rgb[back])
@@ -1061,6 +1046,18 @@ def tutorial():
 				ans = pygame.font.SysFont("VCR OSD Mono",22,)
 				ans = ans.render(f"Button: S or ↓",True,rgb[back])
 				Window.blit(ans,(1280/2-ans.get_width()/2,250))
+			if(sld == 3):
+				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
+				subTit = subTit.render(f"<Spike Ground>",True,rgb[back])
+				Window.blit(subTit,(1280/2-subTit.get_width()/2,200))
+			if(sld == 4):
+				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
+				subTit = subTit.render(f"<Spike Roof>",True,rgb[back])
+				Window.blit(subTit,(1280/2-subTit.get_width()/2,200))
+			
+			try: Window.blit(videos[sld][int(videoInd)],((1280/2-298/2),300))
+			except: videoInd = 0
+			videoInd += 0.15
 			
 			b = pygame.font.SysFont("VCR OSD Mono",22,)
 			if(back): b = b.render(f"<Exit>",True,(45,0,54))
@@ -1073,37 +1070,48 @@ def tutorial():
 	def mush():
 		runMush = True
 		sld = 0
+		videos = []
 		videoInd = 0
+		for n in [["M-bl",0],["M-re",1],["M-ye",2]]:#
+			videos.append([])
+			print(n[0])
+			for f in range(0,30):
+				try: videos[n[1]].append(pygame.transform.scale(pygame.image.load(f"Video-Tutorial/Mushrooms/{n[0]}-{f}.jpg"),[298,230]))
+				except: pass
 		back = False
 		rgb = [(45,0,54),(255,255,255)]
 		while(runMush):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				if(event.type == pygame.QUIT):
 					pygame.quit()
 					exit()
-				if event.type == pygame.KEYDOWN:
-					if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
+				if(event.type == pygame.KEYDOWN):
+					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runMush = False
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						if(back): runMush = False
 						else:
 							sld -= 1
 							videoInd = 0
 							if(sld < 0): sld = 2
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						if(back): runMush = False
 						else:
 							sld += 1
 							videoInd = 0
 							if(sld > 2): sld = 0
-					if(event.key == pygame.K_UP or event.key == pygame.K_DOWN):
+					if(event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_DOWN or event.key == pygame.K_s):
 						back = not(back)
 
 			tit = pygame.font.SysFont("VCR OSD Mono",36,)
 			tit = tit.render(f"<Mushrooms>",True,(255,255,255))
 			Window.blit(tit,(1280/2-tit.get_width()/2,50))
 
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,5,240])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300+230,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)+298,300-5,5,240])
 			if(sld == 0):
 				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
 				subTit = subTit.render(f"Blacks:",True,rgb[back])
@@ -1113,7 +1121,7 @@ def tutorial():
 				Window.blit(ans,(1280/2-ans.get_width()/2,250))
 			if(sld == 1):
 				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
-				subTit = subTit.render(f"Reds:",True,[255,255,255])
+				subTit = subTit.render(f"Reds:",True,rgb[back])
 				Window.blit(subTit,(1280/2-subTit.get_width()/2,200))
 				ans = pygame.font.SysFont("VCR OSD Mono",22,)
 				ans = ans.render(f"Effect: slowness",True,rgb[back])
@@ -1126,6 +1134,10 @@ def tutorial():
 				ans = ans.render(f"Effect: trampoline",True,rgb[back])
 				Window.blit(ans,(1280/2-ans.get_width()/2,250))
 
+			try: Window.blit(videos[sld][int(videoInd)],((1280/2-298/2),300))
+			except: videoInd = 0
+			videoInd += 0.05
+
 			b = pygame.font.SysFont("VCR OSD Mono",22,)
 			if(back): b = b.render(f"<Exit>",True,(45,0,54))
 			else: b = b.render(f"<Exit>",True,(255,255,255))
@@ -1136,37 +1148,48 @@ def tutorial():
 	def pter():
 		runPter = True
 		sld = 0
+		videos = []
 		videoInd = 0
+		for n in [["Prepair",0],["Attack",1]]:#
+			videos.append([])
+			print(n[0])
+			for f in range(0,30):
+				try: videos[n[1]].append(pygame.transform.scale(pygame.image.load(f"Video-Tutorial/Pterossaurs/{n[0]}-{f}.jpg"),[298,230]))
+				except: pass
 		back = False
 		rgb = [(45,0,54),(255,255,255)]
 		while(runPter):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
+				if(event.type == pygame.QUIT):
 					pygame.quit()
 					exit()
-				if event.type == pygame.KEYDOWN:
-					if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
+				if(event.type == pygame.KEYDOWN):
+					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runPter = False
-					if(event.key == pygame.K_LEFT):
+					if(event.key == pygame.K_LEFT or event.key == pygame.K_a):
 						if(back): runPter = False
 						else:
 							sld -= 1
 							videoInd = 0
 							if(sld < 0): sld = 1
-					if(event.key == pygame.K_RIGHT):
+					if(event.key == pygame.K_RIGHT or event.key == pygame.K_d):
 						if(back): runPter = False
 						else:
 							sld += 1
 							videoInd = 0
 							if(sld > 1): sld = 0
-					if(event.key == pygame.K_UP or event.key == pygame.K_DOWN):
+					if(event.key == pygame.K_UP or event.key == pygame.K_w or event.key == pygame.K_DOWN or event.key == pygame.K_s):
 						back = not(back)
 
 			tit = pygame.font.SysFont("VCR OSD Mono",36,)
 			tit = tit.render(f"<Pterossaurs>",True,(255,255,255))
 			Window.blit(tit,(1280/2-tit.get_width()/2,50))
 
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300-5,5,240])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)-5,300+230,308,5])
+			pygame.draw.rect(Window,(255,255,255),[(1280/2-298/2)+298,300-5,5,240])
 			if(sld == 0):
 				subTit = pygame.font.SysFont("VCR OSD Mono",28,)
 				subTit = subTit.render(f"Prepair:",True,rgb[back])
@@ -1184,6 +1207,15 @@ def tutorial():
 				ans = ans.render(f"The pterossaur move to attack the dino",True,rgb[back])
 				Window.blit(ans,(1280/2-ans.get_width()/2,250))
 
+			try: Window.blit(videos[sld][int(videoInd)],((1280/2-298/2),300))
+			except: videoInd = 0
+			videoInd += 0.05
+
+			b = pygame.font.SysFont("VCR OSD Mono",22,)
+			if(back): b = b.render(f"<Exit>",True,(45,0,54))
+			else: b = b.render(f"<Exit>",True,(255,255,255))
+			Window.blit(b,(1280/2-b.get_width()/2,550))
+
 			pygame.display.update()
 	
 	maxButtonsTutorial = 4
@@ -1194,24 +1226,24 @@ def tutorial():
 		selectTutorial.append([255,255,255])
 	while(runTutorial):
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if(event.type == pygame.QUIT):
 				pygame.quit()
 				exit()
-			if event.type == pygame.KEYDOWN:
-				if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
+			if(event.type == pygame.KEYDOWN):
+				if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 					runTutorial = False
 
-				if event.key == pygame.K_UP:
+				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acIndTutorial -= 1
 					if(acIndTutorial < 0): acIndTutorial = maxButtonsTutorial-1
-				if event.key == pygame.K_DOWN:
+				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acIndTutorial += 1
 					if(acIndTutorial > maxButtonsTutorial-1): acIndTutorial = 0
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 0:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 0:
 					ctrl()
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 1:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 1:
 					mush()
-				if(event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndTutorial == 2:
+				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 2:
 					pter()
 					
 		
@@ -1255,7 +1287,7 @@ def credits():
 	"Arte geral: -------------------------------------------------------> Marco Antônio Zerbielli Bee",
 	"Construção de mapas: ----------------------------------> Marco A. Z. Bee / Matheus Zuck Balbinot",
 	"Design de Dinossauros: -----------------------------------------------------> Lucas Lodi Valenga",
-	"Vídeo-tutoriais: --------------------------------------------------------> Matheus Zuck Balbinot",
+	"Correção: ---------------------------------------------------------------> Matheus Zuck Balbinot",
 	]
 	passChar = 1
 	for button in range(maxButtonsCredits):
@@ -1263,17 +1295,17 @@ def credits():
 	while(runCredits):
 		selectCredits = []
 		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
+			if(event.type == pygame.QUIT):
 				pygame.quit()
 				exit()
-			if event.type == pygame.KEYDOWN:
-				if(((event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT) and acIndCredits == 6) or event.key == pygame.K_ESCAPE):
+			if(event.type == pygame.KEYDOWN):
+				if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndCredits == 6) or event.key == pygame.K_ESCAPE):
 					runCredits = False
-				if event.key == pygame.K_UP:
+				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acIndCredits -= 1
 					if(acIndCredits < 0): acIndCredits = maxButtonsCredits-1
 					passChar = 1
-				if event.key == pygame.K_DOWN:
+				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acIndCredits += 1
 					if(acIndCredits > maxButtonsCredits-1): acIndCredits = 0
 					passChar = 1
