@@ -225,7 +225,7 @@ def game(lv,db,data,stg,pSet):
 		def __init__(self,sk,beginY):
 			self.sensorColl = []	#Sensores de colisão do dinossauro;
 			self.sensorObj = []		#Objetos de colisão;
-			self.death = False		#
+			self.death = False		#Salva o estado de vida do dinossauro;
 			self.allSpr = []		#
 			self.atualSpr = 1		#
 			'''
