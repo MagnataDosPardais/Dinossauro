@@ -1,82 +1,115 @@
-import pygame
-import random
-import math
-import json
-import ast
+import pygame	#Biblioteca gráfica;
+import random	#Biblioteca de geração de números pseudo-aleatórios;
+import math		#Biblioteca matemática;
+import json		#Biblioteca de Bancos de Dados;
+import ast		#Biblioteca de conversão srting -> literal [bytes|números|listas|dicíonários|booleanos];
 
-pygame.init()
-pygame.font.init()
+pygame.init()		#Inicia o pygame;
+pygame.font.init()	#Inicia o pygame.fontes/escrita
 
+'''
+Classe que opera o banco de dados a partir do caminho do arquivo:'''
 class DataBank:
+	'''
+	Salva um dicionário baseado na interpretação de uma string (ast) de um banco de dados json:'''
 	def __init__(self,fileWay):
 		self.fileWay = fileWay
-		self.db = 0
+		self.db = ''
 		self.dbSTR = ''
 		with open(self.fileWay,'r') as self.dbSTR:
 			self.db = self.dbSTR.read()
 			self.db = ast.literal_eval(self.db)
 			self.dbSTR.close()
 
-	def saveValueByKey(self,keyWord,val):
-		with open(self.fileWay,'w') as self.dbSTR:
-			self.db[keyWord[0]][keyWord[1]] = val
-			json.dump(self.db,self.dbSTR, sort_keys=True,indent=4,separators=(",",":"))
-			self.dbSTR.close()
+	'''
+	Salva um valor à partir da chave do dicionário:'''
+	def saveValueByKey(self,keyWord,val):			#Alterar valor no banco de dados (chaves,valor):
+		with open(self.fileWay,'w') as self.dbSTR:	#Abre o arquivo em modo de escrita;
+			self.db[keyWord[0]][keyWord[1]] = val	#altera o vaor a partir da chave;
+			json.dump(self.db,self.dbSTR, sort_keys=True,indent=4,separators=(',',':'))
+			#Reescreve o arquivo (ordem alfabética,identação4,separar com ',' e ':');
+			self.dbSTR.close()						#Fecha o arquivo;
 
-	def readValueByKey(self,keyWord): return(self.db[keyWord[0]][keyWord[1]])
+	'''
+	Retorna um valor à partir da chave do dicionário:'''
+	def readValueByKey(self,keyWord):
+		return(self.db[keyWord[0]][keyWord[1]])
 
-	def readValues(self): return(self.db)
+	'''
+	Retorna o dicionário:'''
+	def readValues(self):
+		return(self.db)
 
-dataBank = DataBank("DataBanks/DB_Fix.json")
-Window = pygame.display.set_mode([1280,600],pygame.FULLSCREEN)
-#Window = pygame.display.set_mode([800,600])
-indInfoSettings = dataBank.readValueByKey(["gSystem","Settings"])
+dataBank = DataBank("DataBanks/DB_Fix.json")						#Cria um objeto para o banco de dados;
+Window = pygame.display.set_mode([1280,600],pygame.FULLSCREEN)		#Cria um objeto para a tela;
+
+indInfoSettings = dataBank.readValueByKey(["gSystem","Settings"])	#Índices de configurações;
 infoSettings = [
 	["Preto","Cinza-Escuro","Cinza-Claro","Branco","Roxo","Azul","Ciano"],
 	["Standart","Gaudélio","Chaves","Mazuttissauro"],
 	["WASD","↑←↓→"],
 	["auto","exit"],
 	[True,False],
-	[False,True],
-]
-lev = 2
+	[False,True],]													#Informações das configurações;
+lev = len(dataBank.readValueByKey(["gSystem","unlckLevel"]))		#Nível à jogar;
 
+def clsLNK(ev,par):
+	if(ev == par):		#Se o evento condizer com o parâmetro:
+		pygame.quit()	#Fecha o pygame.
+		exit()			#Fecha o python.
+
+'''
+A função menu() é a principal do código, nela ocorrem todas as otras partes do programa.'''
 def menu():
-	global lev
-	maxButtonsMenu = 6
-	acInd = 0
-	select = []
+	global lev 			#Importa "lev" do escopo global;
+	maxButtonsMenu = 6	#Define o número de botões;
+	acInd = 0			#Índice de seleção do botão;
+	select = []			#Marca o botão selecionado;
 	for button in range(maxButtonsMenu):
 		select.append([255,255,255])
+	'''
+	Repete indefinidamente:
+		Lê as teclas pressionadas:
+			Se((cima ou baixo) ou (W ou S)):
+				Muda o botão;
+			Se((lados) ou (A ou D)):
+				Abre aba do botão;'''
 	while True:
 		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				pygame.quit()
-				exit()
+			clsLNK(event.type,pygame.QUIT)
 			if(event.type == pygame.KEYDOWN):
-				if(event.key == pygame.K_ESCAPE):
-					pygame.quit()
-					exit()
+				clsLNK(event.key,pygame.K_ESCAPE)
 				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acInd -= 1
 					if(acInd < 0): acInd = maxButtonsMenu-1
 				if(event.key == pygame.K_DOWN or event.key == pygame.K_s):
 					acInd += 1
 					if(acInd > maxButtonsMenu-1): acInd = 0
+				#Cada valor de 'acInd' executa uma função diferente;
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 0:
+					#acInd==0 | jogo.
 					game(lev,dataBank.readValues(),infoSettings,indInfoSettings,[180,420])
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 1:
+					#acInd==1 | configurações.
 					settings()
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 2:
+					#acInd==2 | Seleção de níveis.
 					lev = level(dataBank)
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 3:
+					#acInd==3 | Vídeo-Tutoriais.
 					tutorial()
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 4:
+					#acInd==4 | créditos.
 					credits()
 				if(event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acInd == 5:
+					#acInd==5 | fecha.
 					pygame.quit()
 					exit()
 		
+		'''
+		Preenche o fundo de roxo;
+		À partir de 'acInd', insere a cor "roxo-escuro" no botão selecionado com insert();
+		Escreve Po título e as funções dos botões na tela;'''
 		Window.fill([80,10,170])
 		select = []
 		for button in range(maxButtonsMenu):
@@ -114,6 +147,9 @@ def menu():
 		pygame.display.update()
 
 def game(lv,db,data,stg,pSet):
+
+	'''
+	Funcão que verifica a ação após o jogador ganhar ou perder, de acordo com a configuração "Pass Level";'''
 	def passLevel(runPL,beh):
 		global lev
 		maxButtonsPL = 2
@@ -122,6 +158,22 @@ def game(lv,db,data,stg,pSet):
 		runLve = True
 		for button in range(maxButtonsPL):
 			select.append([255,255,255])
+		'''
+		Repete se (runLve == True):
+			Se(Ganhou e (Pass Level == auto)):
+				Desbloqueia a fase no banco de dados;
+				Executa o jogo na próxima fase;
+			Se(Ganhou e (Pass Level == exit)):
+				Desbloqueia a fase no banco de dados;
+				Fecha o jogo;
+				Volta para o menu();
+			Se(Perdeu):
+				Apresenta a ela de jogar novamente;
+				Se(Jogar nova,mente == True):
+					Reinicia o jogo na mesma fase;
+				Se(Jogar nova,mente == False):
+					Fecha o jogo;
+					Volta para o menu();'''
 		while(runLve):
 			if(runPL and (beh == 0)):
 				if(lev <= 2): lev += 1
@@ -132,13 +184,9 @@ def game(lv,db,data,stg,pSet):
 				menu()
 			elif(not(runPL)):
 				for event in pygame.event.get():
-					if(event.type == pygame.QUIT):
-						pygame.quit()
-						exit()
+					clsLNK(event.type,pygame.QUIT)
 					if(event.type == pygame.KEYDOWN):
-						if(event.key == pygame.K_ESCAPE):
-							pygame.quit()
-							exit()
+						clsLNK(event.key,pygame.K_ESCAPE)
 						if(event.key == pygame.K_UP or event.key == pygame.K_w):
 							acInd -= 1
 							if(acInd < 0): acInd = maxButtonsPL-1
@@ -170,34 +218,34 @@ def game(lv,db,data,stg,pSet):
 
 				pygame.display.update()
 
-	
+	'''Classe que controla o Dinossauro:'''
 	class Dino:
-		"""docstring for Dino"""
+		'''
+		Iniciação da classe:'''
 		def __init__(self,sk,beginY):
-			self.sensorColl = []
-			self.sensorObj = []
-			self.jump = 0
-			self.death = False
-			self.allSpr = []
-			self.atualSpr = 1
+			self.sensorColl = []	#Sensores de colisão do dinossauro;
+			self.sensorObj = []		#Objetos de colisão;
+			self.death = False		#
+			self.allSpr = []		#
+			self.atualSpr = 1		#
+			'''
+			Carega as duas imagens (1=Levantado, 0=Agachado) à partir da skin:'''
 			for s in range(0,2):
 				self.allSpr.append((pygame.image.load(f"Dinos/Dino-{sk}_{s}.png").convert_alpha()))
-			self.spr = self.allSpr[self.atualSpr]
-			self.pos = [640-pygame.Surface.get_width(self.spr),beginY]
-			self.per = False
-			self.exe = True
-			self.reseted = False
-			self.deltaA = 1
-			self.deltaT = 0
-			self.deltaG = 46
-			self.blindConf = [0,0]
-			self.blindDur = 0
-			self.light = pygame.image.load("Dinos/lght.png")
-			self.light = pygame.transform.scale2x(self.light)
-			self.dark = pygame.Surface([1280,600],pygame.SRCALPHA)
-			self.dark.fill((0,0,0,255))
-			self.lastPos = []
-			self.indLP = 2
+			self.spr = self.allSpr[self.atualSpr]					#
+			self.pos = [640-self.spr.get_width(),beginY]			#
+			self.per = False										#
+			self.exe = True											#
+			self.reseted = False									#
+			self.deltaA = 1											#
+			self.deltaT = 0											#
+			self.deltaG = 46										#
+			self.blindConf = [0,0]									#
+			self.blindDur = 0										#
+			self.light = pygame.image.load("Dinos/lght.png")		#
+			self.light = pygame.transform.scale2x(self.light)		#
+			self.dark = pygame.Surface([1280,600],pygame.SRCALPHA)	#
+			self.dark.fill((0,0,0,255))								#
 
 		def getPos(self,axis='a'): 
 			if(axis == 'a'): return(self.pos)
@@ -253,6 +301,9 @@ def game(lv,db,data,stg,pSet):
 				self.deltaA = power
 				self.deltaT = 0
 				self.reseted = True
+
+		def setGravity(self,g):
+			self.deltaG = g
 
 		def isExe(self):
 			return(self.exe)
@@ -543,6 +594,26 @@ def game(lv,db,data,stg,pSet):
 			elif(axis == 'y'): return(self.pos[1])
 			else: return([None,None])
 
+		def getTan(self):
+			return(self.tan)
+
+		def getMeasures(self,metric='a'):
+			if(metric == 'a'): return(self.spr[int(self.sprIndex)].get_size())
+			if(metric == 'h'): return(self.spr[int(self.sprIndex)].get_height())
+			if(metric == 'w'): return(self.spr[int(self.sprIndex)].get_width())
+			else: return(None)
+
+		def getHitBox(self):
+			return(self.collBox)
+
+		def isCalculating(self,primitiveType):
+			if(primitiveType == "bool"): return(self.closeTan >= 0)
+			elif(primitiveType == "int"): return(self.closeTan)		
+			else: return(None)	
+
+		def tangentDeviation(self,devi):
+			self.tan += devi
+
 		def calcAngle(self,target):
 			x1,x2 = self.pos[0],target[0]
 			y1,y2 = self.pos[1],target[1]
@@ -599,9 +670,7 @@ def game(lv,db,data,stg,pSet):
 	while(run):
 		if(not(w.win(11)) and ply):
 			for event in pygame.event.get():
-				if(event.type == pygame.QUIT):
-					pygame.quit()
-					exit()
+				clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 				if(event.type == pygame.KEYDOWN):
 					if(event.key == pygame.K_ESCAPE):
 						levelPass = False
@@ -629,10 +698,10 @@ def game(lv,db,data,stg,pSet):
 			if(data[5][stg[5]]):
 				Window.fill(bgRGB[stg[0]])
 				if(not(begDead)):
-					pygame.draw.line(Window,(255,0,0),pters.pos,[pters.pos[0]+pters.spr[int(pters.sprIndex)].get_width(),pters.pos[1]],width=4)
-					pygame.draw.line(Window,(255,0,0),pters.pos,[pters.pos[0],pters.pos[1]+pters.spr[int(pters.sprIndex)].get_height()],width=4)
-					pygame.draw.line(Window,(255,0,0),[pters.pos[0]+pters.spr[int(pters.sprIndex)].get_width(),pters.pos[1]],[pters.pos[0]+pters.spr[int(pters.sprIndex)].get_width(),pters.pos[1]+pters.spr[int(pters.sprIndex)].get_height()],width=4)
-					pygame.draw.line(Window,(255,0,0),[pters.pos[0],pters.pos[1]+pters.spr[int(pters.sprIndex)].get_height()],[pters.pos[0]+pters.spr[int(pters.sprIndex)].get_width(),pters.pos[1]+pters.spr[int(pters.sprIndex)].get_height()],width=4)
+					pygame.draw.line(Window,(255,0,0),pters.getPos(),[pters.getPos('x')+pters.getMeasures('w'),getPos('y')],width=4)
+					pygame.draw.line(Window,(255,0,0),pters.getPos(),[pters.getPos('x'),pters.getPos('y')+pters.getMeasures('h')],width=4)
+					pygame.draw.line(Window,(255,0,0),[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')],[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')+pters.getMeasures('h')],width=4)
+					pygame.draw.line(Window,(255,0,0),[pters.getPos('x'),pters.getPos('y')+pters.getMeasures('h')],[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')+pters.getMeasures('h')],width=4)
 			w.mapColliders(dino.getPos())
 			w.drawBarreir(dino.getPos('x'))
 			if(not(data[5][stg[5]])):
@@ -646,12 +715,12 @@ def game(lv,db,data,stg,pSet):
 			dino.posSensor()
 
 			try:
-				if(pters.closeTan >= 0):
+				if(pters.isCalculating("bool")):
 					pters.calcAngle([dino.getPos('x')+20,dino.getPos('y')+70])
 					if(data[5][stg[5]]):
-						pygame.draw.line(Window,(175,0,0),[pters.pos[0]+pters.spr[int(pters.sprIndex)].get_width(),pters.pos[1]+pters.spr[int(pters.sprIndex)].get_height()],[dino.pos[0]+20,dino.pos[1]+70],width=4)
-					if(pters.closeTan == 0):
-						pters.tan += random.choice([random.randint(-25,-20),random.randint(20,25)])/100
+						pygame.draw.line(Window,(175,0,0),[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')+pters.getMeasures('h')],[dino.getPos('x')+20,dino.getPos('y')+70],width=4)
+					if(pters.isCalculating("int") == 0):
+						pters.tangentDeviation(random.choice([random.randint(-25,-20),random.randint(20,25)])/100)
 				else:
 					pters.attack()
 				pters.drawPter()
@@ -663,9 +732,9 @@ def game(lv,db,data,stg,pSet):
 
 			key = pygame.key.get_pressed()
 			if(key[ctrlKeys[1]] and not(key[ctrlKeys[0]])):
-				dino.deltaG = 138
+				dino.setGravity(138)
 			else:
-				dino.deltaG = 46
+				dino.setGravity(46)
 
 			dino.squat(1)
 			if(key[ctrlKeys[1]] and not(key[ctrlKeys[0]])):
@@ -680,7 +749,7 @@ def game(lv,db,data,stg,pSet):
 				levelPass = False
 				ply = False
 			if(not(begDead)):
-				if(dino.dinoCollision('B',[pters.collBox]) or dino.dinoCollision('F',[pters.collBox]) or dino.dinoCollision('T',[pters.collBox])):
+				if(dino.dinoCollision('B',[pters.getHitBox()]) or dino.dinoCollision('F',[pters.getHitBox()]) or dino.dinoCollision('T',[pters.getHitBox()])):
 					pygame.time.delay(100)
 					levelPass = False
 					ply = False
@@ -773,9 +842,7 @@ def settings():
 		selectSettings.append([255,255,255])
 	while(runSettings):
 		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				pygame.quit()
-				exit()
+			clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 			if(event.type == pygame.KEYDOWN):
 				if((((event.key == pygame.K_LEFT or event.key == pygame.K_a) or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndSettings == 6) or event.key == pygame.K_ESCAPE):
 					runSettings = False
@@ -888,9 +955,7 @@ def level(db):
 		selectMap.append([255,255,255])
 	while(runMap):
 		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				pygame.quit()
-				exit()
+			clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 			if(event.type == pygame.KEYDOWN):
 				if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndMap == 2) or event.key == pygame.K_ESCAPE):
 					runMap = False
@@ -995,9 +1060,7 @@ def tutorial():
 		while(runCtrl):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if(event.type == pygame.QUIT):
-					pygame.quit()
-					exit()
+				clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 				if(event.type == pygame.KEYDOWN):
 					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runCtrl = False
@@ -1083,9 +1146,7 @@ def tutorial():
 		while(runMush):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if(event.type == pygame.QUIT):
-					pygame.quit()
-					exit()
+				clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 				if(event.type == pygame.KEYDOWN):
 					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runMush = False
@@ -1161,9 +1222,7 @@ def tutorial():
 		while(runPter):
 			Window.fill([80,10,170])
 			for event in pygame.event.get():
-				if(event.type == pygame.QUIT):
-					pygame.quit()
-					exit()
+				clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 				if(event.type == pygame.KEYDOWN):
 					if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndTutorial == 3) or event.key == pygame.K_ESCAPE):
 						runPter = False
@@ -1295,9 +1354,7 @@ def credits():
 	while(runCredits):
 		selectCredits = []
 		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				pygame.quit()
-				exit()
+			clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
 			if(event.type == pygame.KEYDOWN):
 				if(((event.key == pygame.K_LEFT or event.key == pygame.K_a or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndCredits == 6) or event.key == pygame.K_ESCAPE):
 					runCredits = False
