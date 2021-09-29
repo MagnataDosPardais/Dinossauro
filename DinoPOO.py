@@ -7,11 +7,9 @@ import ast		#Biblioteca de conversão srting -> literal [bytes|números|listas|d
 pygame.init()		#Inicia o pygame;
 pygame.font.init()	#Inicia o pygame.fontes/escrita
 
-'''
-Classe que opera o banco de dados a partir do caminho do arquivo:'''
+#Classe que opera o banco de dados a partir do caminho do arquivo:
 class DataBank:
-	'''
-	Salva um dicionário baseado na interpretação de uma string (ast) de um banco de dados json:'''
+	#Salva um dicionário baseado na interpretação de uma string (ast) de um banco de dados json:
 	def __init__(self,fileWay):
 		self.fileWay = fileWay
 		self.db = ''
@@ -21,8 +19,7 @@ class DataBank:
 			self.db = ast.literal_eval(self.db)
 			self.dbSTR.close()
 
-	'''
-	Salva um valor à partir da chave do dicionário:'''
+	#Salva um valor à partir da chave do dicionário:
 	def saveValueByKey(self,keyWord,val):			#Alterar valor no banco de dados (chaves,valor):
 		with open(self.fileWay,'w') as self.dbSTR:	#Abre o arquivo em modo de escrita;
 			self.db[keyWord[0]][keyWord[1]] = val	#altera o vaor a partir da chave;
@@ -30,18 +27,20 @@ class DataBank:
 			#Reescreve o arquivo (ordem alfabética,identação4,separar com ',' e ':');
 			self.dbSTR.close()						#Fecha o arquivo;
 
-	'''
-	Retorna um valor à partir da chave do dicionário:'''
+	#Retorna um valor à partir da chave do dicionário:
 	def readValueByKey(self,keyWord):
 		return(self.db[keyWord[0]][keyWord[1]])
 
-	'''
-	Retorna o dicionário:'''
+	#Retorna o dicionário:
 	def readValues(self):
 		return(self.db)
 
 dataBank = DataBank("DataBanks/DB_Fix.json")						#Cria um objeto para o banco de dados;
 Window = pygame.display.set_mode([1280,600],pygame.FULLSCREEN)		#Cria um objeto para a tela;
+
+print(len(dataBank.readValueByKey(["LV1","bg"])[0]))
+print(len(dataBank.readValueByKey(["LV2","bg"])[0]))
+print(len(dataBank.readValueByKey(["LV3","bg"])[0]))
 
 indInfoSettings = dataBank.readValueByKey(["gSystem","Settings"])	#Índices de configurações;
 infoSettings = [
@@ -58,8 +57,7 @@ def clsLNK(ev,par):
 		pygame.quit()	#Fecha o pygame.
 		exit()			#Fecha o python.
 
-'''
-A função menu() é a principal do código, nela ocorrem todas as otras partes do programa.'''
+#A função menu() é a principal do código, nela ocorrem todas as otras partes do programa:
 def menu():
 	global lev 			#Importa "lev" do escopo global;
 	maxButtonsMenu = 6	#Define o número de botões;
@@ -148,8 +146,7 @@ def menu():
 
 def game(lv,db,data,stg,pSet):
 
-	'''
-	Funcão que verifica a ação após o jogador ganhar ou perder, de acordo com a configuração "Pass Level";'''
+	#Funcão que verifica a ação após o jogador ganhar ou perder, de acordo com a configuração "Pass Level":
 	def passLevel(runPL,beh):
 		global lev
 		maxButtonsPL = 2
@@ -220,65 +217,73 @@ def game(lv,db,data,stg,pSet):
 
 	'''Classe que controla o Dinossauro:'''
 	class Dino:
-		'''
-		Iniciação da classe:'''
+		#Iniciação da classe:
 		def __init__(self,sk,beginY):
 			self.sensorColl = []	#Sensores de colisão do dinossauro;
 			self.sensorObj = []		#Objetos de colisão;
-			self.death = False		#Salva o estado de vida do dinossauro;
-			self.allSpr = []		#
-			self.atualSpr = 1		#
-			'''
-			Carega as duas imagens (1=Levantado, 0=Agachado) à partir da skin:'''
+			self.allSpr = []		#Lista contendo as imagens;
+			self.atualSpr = 1		#Índice da imagem atual;
+			#Carega as duas imagens (1=Levantado, 0=Agachado) à partir da skin:
 			for s in range(0,2):
 				self.allSpr.append((pygame.image.load(f"Dinos/Dino-{sk}_{s}.png").convert_alpha()))
-			self.spr = self.allSpr[self.atualSpr]					#
-			self.pos = [640-self.spr.get_width(),beginY]			#
-			self.per = False										#
-			self.exe = True											#
-			self.reseted = False									#
-			self.deltaA = 1											#
-			self.deltaT = 0											#
-			self.deltaG = 46										#
-			self.blindConf = [0,0]									#
-			self.blindDur = 0										#
-			self.light = pygame.image.load("Dinos/lght.png")		#
-			self.light = pygame.transform.scale2x(self.light)		#
-			self.dark = pygame.Surface([1280,600],pygame.SRCALPHA)	#
-			self.dark.fill((0,0,0,255))								#
+			self.spr = self.allSpr[self.atualSpr]					#Imagem atual;
+			self.pos = [640-self.spr.get_width(),beginY]			#Posição da imagem (centralizada no eixo x);
+			self.exe = True											#Executando o pulo (subindo ou descendo);
+			self.reseted = False									#Permissão para reiniciar os valores das instâncias referentes ao salto;
+			self.deltaA = 1											#Aceleração resultante;
+			self.deltaT = 0											#Tempo de execução;
+			self.deltaG = 46										#Força gravitacional;
+			self.blindConf = [0,0]									#Parâmetros do efeito de segueira [fase, canal alpha da imagem];
+			self.blindDur = 0										#Duração da segueira;
+			self.light = pygame.image.load("Dinos/lght.png")		#Carrega a imagem da luz;
+			self.light = pygame.transform.scale2x(self.light)		#Duplica o tamanho da imagem da luz;
+			self.dark = pygame.Surface([1280,600],pygame.SRCALPHA)	#Cria uma superfície do tamanho da tela;
+			self.dark.fill((0,0,0,255))								#Pinta essa superfície de preto;
 
+		#Retorna as coordenadas da imagem do dinossauro à partir de uma string com o nome do eixo:
 		def getPos(self,axis='a'): 
 			if(axis == 'a'): return(self.pos)
 			elif(axis == 'x'): return(self.pos[0])
 			elif(axis == 'y'): return(self.pos[1])
 			else: return([None,None])
-
+		
+		#Desenha o dinossauro:
 		def drawChar(self):
 			self.spr = self.allSpr[self.atualSpr]
 			Window.blit(self.spr,self.pos)
 
+		#Muda o índice do sprite para 0==agachado:
 		def squat(self,do):
 			self.atualSpr = do
 
+		#Dininui a velocidade do dinossauro (subtrai a posição de x):
 		def blocked(self,spd):
 			self.pos[0] -= spd
 
+		#Altera a pisição de y da imagem do dinossauro:
 		def ramp(self,multiply):
 			self.pos[1] -= multiply
 
+		'''
+		Cria e posiciona os sensores de colisão do dinossauro:
+			Reinicia as instâncias dos objetos e sensores;
+			Cria 3 superfícies, vulgo sensores;
+			Define o canal alpha das superfícies como 255 (transparente);
+			Posiciona os sensores na tela e salva um objeto de cada um;'''
 		def posSensor(self):
 			self.sensorColl = []
 			self.sensorObj = []
-			self.sensorObj.append(pygame.Surface([55,25],pygame.SRCALPHA)) #Base
-			self.sensorObj.append(pygame.Surface([60,10],pygame.SRCALPHA)) #Topo
-			self.sensorObj.append(pygame.Surface([15,25],pygame.SRCALPHA)) #Front
-			self.sensorObj[0].fill((255,255,0,0)) #Base
-			self.sensorObj[1].fill((255,0,255,0)) #Topo
-			self.sensorObj[2].fill((0,255,255,0)) #Front	
-			self.sensorColl.append(Window.blit(self.sensorObj[0],(self.pos[0]+65,self.pos[1]+56)))
-			self.sensorColl.append(Window.blit(self.sensorObj[1],(self.pos[0]+60,self.pos[1]+40+(-self.atualSpr*20))))
-			self.sensorColl.append(Window.blit(self.sensorObj[2],(self.pos[0]+120,self.pos[1]+24+(-self.atualSpr*20))))
+			self.sensorObj.append(pygame.Surface([55,25],pygame.SRCALPHA)) #Base;
+			self.sensorObj.append(pygame.Surface([60,10],pygame.SRCALPHA)) #Topo;
+			self.sensorObj.append(pygame.Surface([15,25],pygame.SRCALPHA)) #Frente;
+			self.sensorObj[0].fill((255,255,0,0)) #Base;
+			self.sensorObj[1].fill((255,0,255,0)) #Topo;
+			self.sensorObj[2].fill((0,255,255,0)) #Frente;
+			self.sensorColl.append(Window.blit(self.sensorObj[0],(self.pos[0]+65,self.pos[1]+56)))						#Base;
+			self.sensorColl.append(Window.blit(self.sensorObj[1],(self.pos[0]+60,self.pos[1]+40+(-self.atualSpr*20))))	#Topo;
+			self.sensorColl.append(Window.blit(self.sensorObj[2],(self.pos[0]+120,self.pos[1]+24+(-self.atualSpr*20))))	#Frente;
 
+		#Verifica se algum sensor (Base, Topo ou Frente) colidiu com uma lista de objetos:
 		def dinoCollision(self,s,listC):
 			detectGroup = False
 			s = ['B','T','F'].index(s)
@@ -286,7 +291,14 @@ def game(lv,db,data,stg,pSet):
 				detectGroup = True
 			return(detectGroup)
 
-		def pulo(self,res,exe,power):
+		'''
+		Função que executa o pulo:
+			Usa A = T*G
+			Se o pulo deve ser executado:
+				A aceleração (máx: 20m/s) é somada ao eixo y
+			Se o pulo for reiniciado:
+				Reinicia as variáveis do cálculo gravitacional;'''
+		def leap(self,res,exe,power):
 			self.reset = res
 			self.deltaA = power
 			self.exe = exe
@@ -302,29 +314,47 @@ def game(lv,db,data,stg,pSet):
 				self.deltaT = 0
 				self.reseted = True
 
+		#Altera o valor da gravidade:
 		def setGravity(self,g):
 			self.deltaG = g
 
+		#Verifica se o dinossauro está pulado:
 		def isExe(self):
 			return(self.exe)
 
+		#Define a permissão para executar o pulo:
 		def setExe(self,bo):
 			self.exe = bo
 
+		#Verifica se os parâmetros gravitacinais estão sendo reiniciados:
 		def isReseted(self):
 			return(self.reset)
 
+		#Altera a permissão de reiniciamento das variáveis gravitacionais:
 		def setReseted(self,bo):
 			self.reseted = bo
 
+		'''
+		Executa a função de segueira:
+			Fase 1:
+				Escurece gradativemente a tela (Desenha self.dark com o canal alpha em passo 5 até 253)
+				Quando o alpha chega a 253, passa para a próxima fase;
+			Fase 2:
+				Desenha self.dark com o canal alpha em 253;
+				Desenha self.light na posilção do dinossauro;
+				Quando o tempo do efeiro chega a 0, passa para a próxima fase;
+			Fase 3:
+				Clareia gradativemente a tela (Desenha self.dark com o canal alpha em passo -5 até 0)
+				Quando o alpha chega a 253, passa para a próxima fase;
+			Retorna a condição da segueira (está ou não sob efeito);'''
 		def blindness(self,dur):
 			if(self.blindConf[0] == 1):
-				if(self.blindConf[1] <= 252):
+				if(self.blindConf[1] <= 253):
 					self.blindConf[1] += 5
 					self.blindDur = dur
 				else:
 					self.blindConf[0] += 1
-					self.blindConf[1] = 252
+					self.blindConf[1] = 253
 				self.dark.set_alpha(self.blindConf[1])
 				Window.blit(self.dark,(0,0))
 				Window.blit(self.light,(self.pos[0]-(self.light.get_width()/2-self.spr.get_width()/2)+30,self.pos[1]-self.deltaA-(self.light.get_height()/2-self.spr.get_height()/2)))
@@ -346,54 +376,62 @@ def game(lv,db,data,stg,pSet):
 			if(self.blindConf[0] != 0): return(False)
 			else: self.blindConf = [0,0]; self.blindDur = dur; return(True)
 		
+		#Ativa o efeito de segueira:
 		def activateBlindness(self):
 			self.blindConf[0] = 1
 
 
+	'''Classe que controla o Cenário:'''
 	class Scenary:
-		"""docstring for Walls"""
+		#Iniciação da classe:
 		def __init__(self,mapLevel):
-			self.pos = [200,0]#163,189
-			self.speed = 0
-			self.blocks = []
-			self.listWalls = []
-			self.mapLevel = mapLevel
-			self.bgImages = []
-			self.collH = [[],[]] #Horizontal,RED; {[Topo],[Base]}
-			self.collV = [] #Vertical,GREEN
-			self.collD = [[],[],[]] #Diagonal,BLUE; {[Up],[Down],[Stop]}
-			self.atualSpr = 0
-			for b in range(1,17):
+			self.pos = [200,0]			#Posição do cenário;
+			self.speed = 0				#Velocidade de deslocamento do cenário;
+			self.blocks = []			#Lista de imagens dos blocos do jogo;
+			self.mapLevel = mapLevel	#Matriz do mapa;
+			self.bgImages = []			#Imagens da chama;
+			#Tipos de colisores:
+			self.collH = [[],[]] 	#Horizontal: {[Topo],[Base],[Espinho],[CogumeloY],[CogumeloR]};
+			self.collV = [] 		#Vertical;
+			self.collD = [[],[],[]] #Diagonal: {[Up],[Down],[Stop]};
+			self.atualSpr = 0			#Índice do sprite da chama;
+			#Carrega as imagens do cenário e da chama;
+			for s in range(1,17):
 				try:
-					self.blocks.append(pygame.image.load(f"Cenario/Chao{b}.png"))
+					self.blocks.append(pygame.image.load(f"Cenario/Chao{s}.png"))
 				except:
-					self.blocks.append(pygame.image.load(f"Cenario/Chao{b}.jpg"))
+					self.blocks.append(pygame.image.load(f"Cenario/Chao{s}.jpg"))
 				try:
-					self.bgImages.append(pygame.image.load(f"Cenario/Fire/Fogo-{b-1}.png"))
-					self.bgImages[b-1] = self.bgImages[b-1].convert_alpha()
-					self.bgImages[b-1] = pygame.transform.scale(self.bgImages[b-1],(900,1200))
+					self.bgImages.append(pygame.image.load(f"Cenario/Fire/Fogo-{s-1}.png"))
+					self.bgImages[s-1] = self.bgImages[s-1].convert_alpha()
+					self.bgImages[s-1] = pygame.transform.scale(self.bgImages[s-1],(900,1200))
 				except: pass
-			self.bar = []
-			self.msh = []
-			self.logs = []
+			self.bar = []	#Lista com os parâmetros dos cogumelos;
+			self.msh = []	#Lista contendo as imagens dos cogumelos;
+			#Carrega as imagens dos cogumelos:
 			for t in ['B','R','Y']:
 				self.msh.append([])
 				for i in range(1,3):
 					self.msh[['B','R','Y'].index(t)].append(pygame.image.load(f"Cenario/Mushrooms/Ms-{t}{i}.png"))
-			self.indFlag = 0
-			self.flgImg = []
+			self.flgImg = []	#Imagens da bandeira;
+			self.indFlag = 0	#Índice do sprite da bandeira;
+			#Carrega as imagens da bandeira:
 			for f in range(0,4):
 				self.flgImg.append(pygame.image.load(f"Cenario/Flag/Flag-{f}.png"))
 
-		def newMap(self,arrMap):
-			self.mapLevel = arrMap
-
+		#Desenha a chama na tela:
 		def drawFlame(self):
 			self.src = self.bgImages[self.atualSpr]
 			self.atualSpr += 1
 			if(self.atualSpr > 11): self.atualSpr = 0
 			Window.blit(self.src,(-560,-430))
 
+		'''
+		Desenha os blocos na tela à partir da matriz self.mapLevel:
+		*Otimização: Limita a função de desenho aos blocos que ficam na tela,
+		  O mapa 2 (mais curto é de 98x7 = 686 blocos) ao invés de desenhar os 686 blocos,
+		  ele desenha somente os 98 blocos que vão aparecer na tela (tela = 14x7)
+		  Economia de 588 blocos (1 bloco = 96x96) = 5.149.008 bytes.'''
 		def drawMap(self):
 			for yG in range(self.pos[1]//96,self.pos[1]//96+7):
 				for xG in range(int(-self.pos[0]//96),int(-self.pos[0]//96+15)):
@@ -402,11 +440,14 @@ def game(lv,db,data,stg,pSet):
 						if(pixel != 0):
 							Window.blit(self.blocks[pixel-1],[self.pos[0]+(xG*96),self.pos[1]+yG*96])
 					except: pass
-
+		
+		'''
+		Utilizando o mesmosistema de otimização da função anterior (drawMap),
+		contorna-se os cada tipo de bloco individualmente com linhas separadas em classes específicas'''
 		def mapColliders(self,posDino):
-			self.collH = [[],[],[],[[],[]],[[],[]],[[],[]]] #Horizontal,RED; {[Topo],[Base],[Espinho],[CogumeloY],[CogumeloR]}
-			self.collV = [] #Vertical,GREEN
-			self.collD = [[],[],[]] #Diagonal,BLUE; {[Up],[Down],[Stop]}
+			self.collH = [[],[],[],[[],[]],[[],[]],[[],[]]]	#Horizontal: {[Topo],[Base],[Espinho],[CogumeloY],[CogumeloR]};
+			self.collV = []									#Vertical;
+			self.collD = [[],[],[]]							#Diagonal: {[Up],[Down],[Stop]};
 			for yG in range(int(posDino[1]//96-1),int(posDino[1]//96+2)):
 				for xG in range(int((-self.pos[0]+posDino[0])//96),int((-self.pos[0]+posDino[0])//96)+3):
 					try:
@@ -446,9 +487,11 @@ def game(lv,db,data,stg,pSet):
 								self.collH[1].append(pygame.draw.line(Window,(0,255,0),[self.pos[0]+(xG*96),self.pos[1]+((yG+1)*96)-6],[self.pos[0]+((xG+1)*96)-1,self.pos[1]+((yG+1)*96)-6],5))
 					except: pass
 
+		#Dedslocamento horizontal do mapa (Subtrai a velocidade do eixo x):
 		def walk(self):
 			self.pos[0] -= self.speed
 
+		#Define a velocidade do jogo com sistema de aceleração;
 		def setSpeed(self,s,prog=0):
 			if(prog == 0): self.speed = s
 			else:
@@ -457,6 +500,7 @@ def game(lv,db,data,stg,pSet):
 				if(self.speed > s):
 					self.speed -= (self.speed-s)
 
+		#Retorna uma lista de todos os pontos de determinado tipo de colisor:
 		def getCollideList(self,section):
 			if(section == 'V'): return(self.collV)
 			elif(section == 'H'): return(self.collH)
@@ -464,12 +508,16 @@ def game(lv,db,data,stg,pSet):
 			elif(section == 'A'): return([self.collV,self.collH,self.collD])
 			return([])
 
+		#Define e configura os pontos one os cogumelos serão desenhados:
 		def setBarreir(self,probC):
 			self.bar = []
 			for i in range(0,len(probC)):
 				self.bar.append([f"{probC[i][0]}{random.randint(1,2)}",random.choice(probC[i][1]),random.randint(0,29)])
 			return(self.bar)
 
+		'''
+		Utilizando o mesmosistema de otimização da função anterior (drawMap),
+		desenha os contornos ao redor dos cogumelos:'''
 		def drawBarreir(self,p):
 			for b in self.bar:
 				if((b[1][0]+6 > (-self.pos[0]//96)+p//96) and ((b[1][0]-10 < (-self.pos[0]//96)+p//96))):
@@ -534,6 +582,9 @@ def game(lv,db,data,stg,pSet):
 							self.collH[3][1].append(pygame.draw.line(Window,(0,0,255),[self.pos[0]+b[1][0]*96+b[2],b[1][1]*96+22-(b[1][1]*1.03)],[self.pos[0]+b[1][0]*96+b[2]+35,b[1][1]*96+22-(b[1][1]*1.03)],5))
 							self.collV.append(pygame.draw.line(Window,(0,0,255),[self.pos[0]+b[1][0]*96+b[2],b[1][1]*96+22-(b[1][1]*1.03)],[self.pos[0]+b[1][0]*96+b[2],b[1][1]*96+22-(b[1][1]*1.03)+35],5))
 		
+		'''
+		Utilizando o mesmosistema de otimização da função anterior (drawMap),
+		posiciona-se cada cogumelo em sua posição específica:'''
 		def drawMushroon(self,p):
 			for b in self.bar:
 				if((b[1][0]+6 > (-self.pos[0]//96)+p//96) and ((b[1][0]-10 < (-self.pos[0]//96)+p//96))):
@@ -562,58 +613,72 @@ def game(lv,db,data,stg,pSet):
 						if(b[1][2] == 1): Window.blit(self.msh[2][1],(self.pos[0]+b[1][0]*96+b[2],(b[1][1]-1)*96+70))
 						if(b[1][2] == 2): Window.blit(self.msh[2][1],(self.pos[0]+b[1][0]*96+b[2],b[1][1]*96+22-(b[1][1]*1.03)))
 
+		#Verifica se o dinossauro ganhou (percorreu todo o mapa e o dinossauro permanece vivo):
 		def win(self,marg):
 			return(self.pos[0] <= (-len(self.mapLevel[0])+marg)*96)
 
+		#Retorna a velocidade do mapa:
 		def getSpeed(self):
 			return(self.speed)
 
+		#Desenha a bandeira:
 		def drawFlag(self,indXY):
 			Window.blit(self.flgImg[int(self.indFlag)],(self.pos[0]+indXY[0]*96+45,indXY[1]*96-60))
 			self.indFlag += 0.5
 			if(self.indFlag > 3): self.indFlag = 0
 			
 
+	'''Classe que controla o Pterossauro:'''
 	class Pterossaur:
+		#Iniciação da classe:
 		def __init__(self,y,sp,ran):
-			self.pos = [0,y]
-			self.speed = sp
-			self.tan = 0
-			self.closeTan = ran
-			self.mR = 0
-			self.dead = False
-			self.sprIndex = 0
-			self.spr = []
+			self.pos = [0,y]	#Posição do pterossaudo;
+			self.speed = sp		#Velocidade;
+			self.tan = 0		#Tangente do ângulo;
+			self.closeTan = ran	#Tempo de cálculo;
+			self.mR = 0			#Sentido de giro da imagem;
+			self.dead = False	#Estado de atuação do pterossauro;
+			self.sprIndex = 0	#Índice da imagem do pterossauro;
+			self.spr = []		#Imagens do pterossauro;
+			#Cria um objeto (rect) que será usado na detecção de colisão;
 			self.collBox = pygame.draw.rect(Window,(0,0,0),[-50,-50,1,1])
+			#Carrega todas as imagens do pterossauro;
 			for s in range(1,10):
 				self.spr.append(pygame.image.load(f"Dinos/Pterossaur/Pterossaur-{s}.png"))
 
+		#Retorna as coordenadas da imagem do dinossauro à partir de uma string com o nome do eixo:
 		def getPos(self,axis='a'): 
 			if(axis == 'a'): return(self.pos)
 			elif(axis == 'x'): return(self.pos[0])
 			elif(axis == 'y'): return(self.pos[1])
 			else: return([None,None])
 
+		#Retorna o valor da tangente:
 		def getTan(self):
 			return(self.tan)
 
+		#Retorna o tamanho da imagem:
 		def getMeasures(self,metric='a'):
 			if(metric == 'a'): return(self.spr[int(self.sprIndex)].get_size())
 			if(metric == 'h'): return(self.spr[int(self.sprIndex)].get_height())
 			if(metric == 'w'): return(self.spr[int(self.sprIndex)].get_width())
 			else: return(None)
 
+		#Retorna o objeto de colisão:
 		def getHitBox(self):
 			return(self.collBox)
 
+		#Retorna o valor booleano referente ao tempo de cálculo do pterossauro:
 		def isCalculating(self,primitiveType):
 			if(primitiveType == "bool"): return(self.closeTan >= 0)
 			elif(primitiveType == "int"): return(self.closeTan)		
 			else: return(None)	
 
+		#Faz um desvio na tangente:
 		def tangentDeviation(self,devi):
 			self.tan += devi
 
+		#Calcula o ângulo entre o pterossauro e o dinossauro:
 		def calcAngle(self,target):
 			x1,x2 = self.pos[0],target[0]
 			y1,y2 = self.pos[1],target[1]
@@ -622,6 +687,7 @@ def game(lv,db,data,stg,pSet):
 			if(y1 >= y2): self.mR = 1
 			else: self.mR = -1
 
+		#O pterossauro avança (se move para a direita) conforme o valor estabelecido da tangente:
 		def attack(self):
 			if(self.mR == -1):
 				xf,yf = self.pos[0]+self.speed,self.pos[1]+(self.tan*self.speed)
@@ -629,12 +695,14 @@ def game(lv,db,data,stg,pSet):
 				xf,yf = self.pos[0]+self.speed,self.pos[1]-(self.tan*self.speed)
 			self.pos = [xf,yf]
 
+		#Desenha o pterossauro:
 		def drawPter(self):
 			if(self.closeTan >= 0): self.closeTan -= 1
 			self.collBox = Window.blit(pygame.transform.rotate(self.spr[int(self.sprIndex)],self.mR*self.tan*(180/math.pi)),self.pos)
 			self.sprIndex += self.speed/10
 			if(self.sprIndex >= 9): self.sprIndex = 0
 
+		#Verifica se o pterossauro ainda está na tela:
 		def verifyDead(self):
 			self.dead = (self.pos[0] > 1290) or ((self.pos[0] < -90) or (self.pos[0] > 620))
 			return(self.dead)
@@ -655,6 +723,7 @@ def game(lv,db,data,stg,pSet):
 	strengthJump = 1
 	addStrengthJump = 0
 	s = 6
+	w.setSpeed(s-2)
 	blindnessFX = True
 	dur = 0
 	spawnDelay = pSet[0]
@@ -694,7 +763,7 @@ def game(lv,db,data,stg,pSet):
 					else:
 						spawnDelay -= 1
 
-			w.setSpeed(s)
+			w.setSpeed(s,0.04)
 			if(data[5][stg[5]]):
 				Window.fill(bgRGB[stg[0]])
 				if(not(begDead)):
@@ -818,7 +887,7 @@ def game(lv,db,data,stg,pSet):
 				dur = 80
 			
 			blindnessFX = dino.blindness(dur)
-			dino.pulo(resJump,exeJump,strengthJump)
+			dino.leap(resJump,exeJump,strengthJump)
 			dino.setReseted(False)
 			w.walk()
 			clk.tick(30)
