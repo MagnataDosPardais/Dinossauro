@@ -707,34 +707,37 @@ def game(lv,db,data,stg,pSet):
 			self.dead = (self.pos[0] > 1290) or ((self.pos[0] < -90) or (self.pos[0] > 620))
 			return(self.dead)
 
-
+	#Seleciona o modelo do dinossauro;
 	skin = range(4)
 	skin = skin[stg[1]]
-	dino = Dino(skin,db[f"LV{lv}"]["y"])
-	w = Scenary(db[f"LV{lv}"]["bg"])
-	w.setBarreir(db[f"LV{lv}"]["ms"])
-	clk = pygame.time.Clock()
+	dino = Dino(skin,db[f"LV{lv}"]["y"])	#Cria o objeto "dino": Dino();
+	w = Scenary(db[f"LV{lv}"]["bg"])		#Cria o objeto "w": Scenary;
+	w.setBarreir(db[f"LV{lv}"]["ms"])		#Define as barreiras;
+	clk = pygame.time.Clock()				#Cria um objeto "clk": Clock();
 
-	global lev
-	mBehav = range(3)
+	global lev				#Chama a variável global de níveis;
+	#Variável utilizada como parâmetro na troca de níveis;
+	mBehav = range(2)
 	mBehav = mBehav[stg[3]]
-	resJump = False
-	exeJump = False
-	strengthJump = 1
-	addStrengthJump = 0
-	s = 6
-	w.setSpeed(s-2)
-	blindnessFX = True
-	dur = 0
-	spawnDelay = pSet[0]
-	begDead = True
-	probability = pSet[1]
-	run = True
+	resJump = False			#Reiniciar pulo;
+	exeJump = False			#Executar pulo;
+	strengthJump = 1		#Força do pulo;
+	addStrengthJump = 0		#Força adicional ao pulo;
+	s = 6					#Velocidade do jogo;
+	w.setSpeed(s-2)			#Define a velocidade do Cenário;
+	blindnessFX = False		#Efeito de cegueira;
+	dur = 0					#Duração da cegueira;
+	begDead = True			#Começa sem a classe "Pterossaur";
+	spawnDelay = pSet[0]	#Tempo livre entre pterossauros;
+	probability = pSet[1]	#Probabilidade de aparecer um;
+	run = True				#Executar o ciclo do jogo;
+	#Cores de fundo;
 	bgRGB = [(8,8,8),(53,53,53),(165,165,165),(231,231,231),(80,10,170),(0,24,75),(0,130,160)]
+	#Salva as teclas usadas para jogar;
 	ctrlKeys = [[pygame.K_w,pygame.K_s],[pygame.K_UP,pygame.K_DOWN]]
 	ctrlKeys = ctrlKeys[stg[2]]
-	levelPass = True
-	ply = True
+	levelPass = True        #Passar nível / Nível concluído;
+	ply = True				#Executar o if do jogo;
 
 	while(run):
 		if(not(w.win(11)) and ply):
