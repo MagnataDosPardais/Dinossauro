@@ -937,7 +937,20 @@ def game(lv,db,data,stg,pSet):
 				addStrengthJump = 12
 			
 			'''
-			'''
+			Se a parte superior do dinossauro não colidir com nada:
+				Se for pressionado (↑ ou W) e não (↓ ou S):
+					Se o dinossauro não estiver pulando:
+						Define a execução do pulo como verdadeira;
+						O pulo será definido com força -13;
+						Se o dinossauro pular numa rampa subindo:
+							O pulo será definido com força -14;
+						Se o dinossauro pular numa rampa descendo:
+							O pulo será definido com força -8;
+						Adiciona altura extra com o tempo da tecla pressionada;
+			Senão:
+				Permite o reinício as variáveis gravitacionais;
+				Define a execução do pulo como verdadeira;
+				O pulo será definido com força 4;'''
 			if(not(dino.dinoCollision('T',horz[1]) or dino.dinoCollision('T',horz[0]) or dino.dinoCollision('T',diag[2]) or dino.dinoCollision('F',horz[1]) or dino.dinoCollision('F',diag[2]))):
 				if(key[ctrlKeys[0]] and not(key[ctrlKeys[1]])):
 					if(not(dino.isExe())):
@@ -955,6 +968,24 @@ def game(lv,db,data,stg,pSet):
 				exeJump = True
 				strengthJump = 4
 
+			'''
+			Se o dinossaurao encostar num cogumelo amarelo:
+				Cogumelo grande:
+					Declara o pulo como falso;
+					Permite o reinício as variáveis gravitacionais;
+					Define a execução do pulo como verdadeira;
+					O pulo será definido com força -18;
+				Cogumelo pequeno:
+					Declara o pulo como falso;
+					Permite o reinício as variáveis gravitacionais;
+					Define a execução do pulo como verdadeira;
+					O pulo será definido com força -12;
+			Se o dinossaurao encostar num cogumelo vermelho:
+				Cogumelo grande:
+					Desacelera o dinossauro em direção ao fogo em 1/2 da velocidade;
+				Cogumelo pequeno:
+					Desacelera o dinossauro em direção ao fogo em 1/4 da velocidade;
+			'''
 			if(dino.dinoCollision('B',horz[3][0])):
 				dino.setExe(False)
 				resJump = True
