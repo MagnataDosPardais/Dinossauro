@@ -746,7 +746,7 @@ def game(lv,db,data,stg,pSet):
 	while(run):
 		if(not(w.win(11)) and ply):
 			for event in pygame.event.get():
-				clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
+				clsLNK(event.type,pygame.QUIT)
 				if(event.type == pygame.KEYDOWN):
 					if(event.key == pygame.K_ESCAPE):
 						levelPass = False
@@ -1038,7 +1038,11 @@ def game(lv,db,data,stg,pSet):
 					newLevel.append(lv+1)
 					dataBank.saveValueByKey(["gSystem","unlckLevel"],newLevel)
 			passLevel(levelPass,mBehav)
-			
+
+#Tela de configuração de preferências do jogador:
+'''*Sys: o sitema de seleção de botões e teclas é o mesmo em todas as telas, logo,
+a explicação do menu() se encaixa aqui,com a diferênça dos textos e funções.'''
+#Cada possibilidade é, na verdade um índice da lista 'infoSettings', que é armazenado no banco de dados;
 def settings():
 	maxButtonsSettings = 7
 	runSettings = True
@@ -1048,12 +1052,11 @@ def settings():
 		selectSettings.append([255,255,255])
 	while(runSettings):
 		for event in pygame.event.get():
-			clsLNK(event.type,pygame.QUIT)						#Função que fecha o programa;
+			clsLNK(event.type,pygame.QUIT)
 			if(event.type == pygame.KEYDOWN):
 				if((((event.key == pygame.K_LEFT or event.key == pygame.K_a) or event.key == pygame.K_RIGHT or event.key == pygame.K_d) and acIndSettings == 6) or event.key == pygame.K_ESCAPE):
 					runSettings = False
 					dataBank.saveValueByKey(["gSystem","Settings"],indInfoSettings)
-
 
 				if(event.key == pygame.K_UP or event.key == pygame.K_w):
 					acIndSettings -= 1
@@ -1147,6 +1150,11 @@ def settings():
 
 		pygame.display.update()
 
+#Tela de seleção do mapa:
+'''*Sys: o sitema de seleção de botões e teclas é o mesmo em todas as telas, logo,
+a explicação do menu() se encaixa aqui,com a diferênça dos textos e funções.'''
+#A diferença aqui está no fato do jogador poder vizualizar o conteúdo dos mapas;
+#O desenho dos mapas foi feito com o mesmo algoritmo da função 'drawMap';
 def level(db):
 	global lev
 	maxButtonsMap = 3
@@ -1248,6 +1256,10 @@ def level(db):
 	else:
 		return(lev)
 
+#Tela de visualização de tutoriais:
+'''*Sys: o sitema de seleção de botões e teclas é o mesmo em todas as telas, logo,
+a explicação do menu() se encaixa aqui,com a diferênça dos textos e funções.'''
+#A diferença aqui está no fato do jogador poder vizualizar .gifs rdando na tela;
 def tutorial():
 	
 	def ctrl():
@@ -1541,6 +1553,10 @@ def tutorial():
 
 		pygame.display.update()
 
+#Tela de visualização dos créditos:
+'''*Sys: o sitema de seleção de botões e teclas é o mesmo em todas as telas, logo,
+a explicação do menu() se encaixa aqui,com a diferênça dos textos e funções.'''
+#A diferença aqui está no fato do jogador poder vizualizar uma tela com os créditos;
 def credits():
 	maxButtonsCredits = 7
 	runCredits = True
