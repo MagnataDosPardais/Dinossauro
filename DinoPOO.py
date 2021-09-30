@@ -144,6 +144,7 @@ def menu():
 
 		pygame.display.update()
 
+#A função game() é o código do jogo em sí:
 def game(lv,db,data,stg,pSet):
 
 	#Funcão que verifica a ação após o jogador ganhar ou perder, de acordo com a configuração "Pass Level":
@@ -905,17 +906,17 @@ def game(lv,db,data,stg,pSet):
 			Se o dinossauro caminhar sobre uma rampa que sobe:
 				A imagem do dinossauro desloca para cima;
 				Se o pulo não foi reiniciado:
-					Permite o reinício as variáveis gravitacionais;
+					Permite o reinício as instâncias gravitacionais;
 				Define a execução do pulo como falsa;
 				Se o dinossauro não estiver pulando:
 					O pulo será definido com força 1;
 			Mas se o dinossauro não estiver tocando (O chão, rampa que desce, o topo do cogumelo vermelho ou o topo do cogumelo preto):
-				Nega o reinício as variáveis gravitacionais;
+				Nega o reinício as instâncias gravitacionais;
 				Define a execução do pulo como verdadeira;
 				Se o dinossauro não estiver pulando:
 					O pulo será definido com força 1;
 			Senão:
-				Se as variáveis gravitacionais não foram reiniciadas:
+				Se as instâncias gravitacionais não foram reiniciadas:
 					Define a execução do pulo como verdadeira;
 				Define a execução do pulo como verdadeira;
 				Se o dinossauro não estiver pulando:
@@ -948,7 +949,7 @@ def game(lv,db,data,stg,pSet):
 							O pulo será definido com força -8;
 						Adiciona altura extra com o tempo da tecla pressionada;
 			Senão:
-				Permite o reinício as variáveis gravitacionais;
+				Permite o reinício as instâncias gravitacionais;
 				Define a execução do pulo como verdadeira;
 				O pulo será definido com força 4;'''
 			if(not(dino.dinoCollision('T',horz[1]) or dino.dinoCollision('T',horz[0]) or dino.dinoCollision('T',diag[2]) or dino.dinoCollision('F',horz[1]) or dino.dinoCollision('F',diag[2]))):
@@ -972,12 +973,12 @@ def game(lv,db,data,stg,pSet):
 			Se o dinossaurao encostar num cogumelo amarelo:
 				Cogumelo grande:
 					Declara o pulo como falso;
-					Permite o reinício as variáveis gravitacionais;
+					Permite o reinício as instâncias gravitacionais;
 					Define a execução do pulo como verdadeira;
 					O pulo será definido com força -18;
 				Cogumelo pequeno:
 					Declara o pulo como falso;
-					Permite o reinício as variáveis gravitacionais;
+					Permite o reinício as instâncias gravitacionais;
 					Define a execução do pulo como verdadeira;
 					O pulo será definido com força -12;
 			Se o dinossaurao encostar num cogumelo vermelho:
@@ -985,7 +986,13 @@ def game(lv,db,data,stg,pSet):
 					Desacelera o dinossauro em direção ao fogo em 1/2 da velocidade;
 				Cogumelo pequeno:
 					Desacelera o dinossauro em direção ao fogo em 1/4 da velocidade;
-			'''
+			Se o dinossaurao encostar num cogumelo preto:
+				Cogumelo grande:
+					Ativa a cegueira;
+					Duração de 150 ciclos;
+				Cogumelo pequeno:
+					Ativa a cegueira;
+					Duração de 80 ciclos;'''
 			if(dino.dinoCollision('B',horz[3][0])):
 				dino.setExe(False)
 				resJump = True
@@ -1009,13 +1016,20 @@ def game(lv,db,data,stg,pSet):
 				dino.activateBlindness()
 				dur = 80
 			
-			blindnessFX = dino.blindness(dur)
-			dino.leap(resJump,exeJump,strengthJump)
-			dino.setReseted(False)
-			w.walk()
-			clk.tick(30)
-			pygame.display.update()
+			blindnessFX = dino.blindness(dur)		#Executa a função de cegueira;
+			dino.leap(resJump,exeJump,strengthJump)	#Executa a função de pulo;
+			dino.setReseted(False)					#Declara que nenhuma instância gravitacional foi reiniciada
+			w.walk()								#Move o cenário;
+			clk.tick(30)							#Executa o jogo em 30fps;
+			pygame.display.update()					#Atualiza a tela;
 
+		'''
+		Se o jogo acabar (o jogador venceu ou perdeu):
+			Encerra o while do jogo;
+			Se o jogador passou de nível:
+				Se o proximo nível não constar no banco de dados e o nível for < 3:
+					Desbloqueia (anota) o próximo nível no banco de dados;
+			Função de finalização de fase;'''
 		else:
 			run = False
 			if(levelPass):
