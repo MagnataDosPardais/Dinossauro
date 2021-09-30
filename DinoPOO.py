@@ -739,6 +739,9 @@ def game(lv,db,data,stg,pSet):
 	levelPass = True        #Passar nível / Nível concluído;
 	ply = True				#Executar o if do jogo;
 
+	'''
+	Repita enquanto run == True:
+		Se o jogador não ganhar:'''
 	while(run):
 		if(not(w.win(11)) and ply):
 			for event in pygame.event.get():
@@ -747,7 +750,17 @@ def game(lv,db,data,stg,pSet):
 					if(event.key == pygame.K_ESCAPE):
 						levelPass = False
 						ply = False
-						
+			
+			'''
+			Tente:
+				Se o pterossauro estiver "morto":
+					Se o delay acabar:
+						Se for sorteado a execução:
+							Reinicie o delay;
+							Cria um objeto Pterossaur();
+			Se não funcionar:
+				Se o objeto pters ainda não existir:
+					*Repita as funções do "try" acima;'''
 			try:
 				if(pters.verifyDead()):
 					if(spawnDelay <= 0):
@@ -766,7 +779,12 @@ def game(lv,db,data,stg,pSet):
 					else:
 						spawnDelay -= 1
 
-			w.setSpeed(s,0.04)
+			w.setSpeed(s,0.04)	#Define a velocidade do jogo;
+			'''
+			Se a configuração "Draw Colliders" for 1:
+				Limpa a tela;
+				Se o objeto "pters" existir:
+					Desenha o controrno ao redor do pterossauro;'''
 			if(data[5][stg[5]]):
 				Window.fill(bgRGB[stg[0]])
 				if(not(begDead)):
@@ -774,18 +792,39 @@ def game(lv,db,data,stg,pSet):
 					pygame.draw.line(Window,(255,0,0),pters.getPos(),[pters.getPos('x'),pters.getPos('y')+pters.getMeasures('h')],width=4)
 					pygame.draw.line(Window,(255,0,0),[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')],[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')+pters.getMeasures('h')],width=4)
 					pygame.draw.line(Window,(255,0,0),[pters.getPos('x'),pters.getPos('y')+pters.getMeasures('h')],[pters.getPos('x')+pters.getMeasures('w'),pters.getPos('y')+pters.getMeasures('h')],width=4)
-			w.mapColliders(dino.getPos())
-			w.drawBarreir(dino.getPos('x'))
+			w.mapColliders(dino.getPos())	#Posiciona e desenha os colisores do cenário;
+			w.drawBarreir(dino.getPos('x'))	#Posiciona e desenha os colisores dos cogumelos;
+			
+			'''
+			Se a configuração "Draw Colliders" for 0:
+				limpa a tela;'''
 			if(not(data[5][stg[5]])):
 				Window.fill(bgRGB[stg[0]])
-			dino.drawChar()
+			dino.drawChar()	#Ddesenha o dinossauro;
+			'''
+			Se a configuração "Draw Map" for 0:
+				Desenha a bandeira;
+				Desenha os cogumelos;
+				Desenha o mapa;
+				Desenha a chama;'''
 			if(data[4][stg[4]]):
 				w.drawFlag(db[f"LV{lv}"]["flag"])
 				w.drawMushroon(dino.getPos('x'))
 				w.drawMap()
 				w.drawFlame()
-			dino.posSensor()
+			dino.posSensor()	#Posiciona os sensores no dinossauro;
 
+			'''
+			Tenta:
+				Se o pterossauro estiver calculando:
+					Calcula o ângulo de ataque do pterossauro;
+					Se a configuração "Draw Colliders" for 1:
+						Traça uma linha entre o pterossauro e o dinossauro;
+					Se este for o último cálculo do pterossauro:
+						Aplica um desvio na tangente do ângulo de ataque;
+				Senão:
+					O pterossauro ataca;
+				Desenha o pterossauro;'''
 			try:
 				if(pters.isCalculating("bool")):
 					pters.calcAngle([dino.getPos('x')+20,dino.getPos('y')+70])
@@ -798,24 +837,43 @@ def game(lv,db,data,stg,pSet):
 				pters.drawPter()
 			except: pass
 
-			vert = w.getCollideList('V')
-			horz = w.getCollideList('H')
-			diag = w.getCollideList('D')
+			vert = w.getCollideList('V')	#Retorna uma lista com os colisores verticais;
+			horz = w.getCollideList('H')	#Retorna uma lista com os colisores horizontais;
+			diag = w.getCollideList('D')	#Retorna uma lista com os colisores diagonais;
 
-			key = pygame.key.get_pressed()
+			key = pygame.key.get_pressed()	#Salva as teclas pressionadas;
+			'''
+			Se for pressionado (↓ ou S) e não (↑ ou W):
+				Altera a gravidade para 138;
+			Senão:
+				Altera a gravidade para 46;'''
 			if(key[ctrlKeys[1]] and not(key[ctrlKeys[0]])):
 				dino.setGravity(138)
 			else:
 				dino.setGravity(46)
 
-			dino.squat(1)
+			dino.squat(1)	#Define o srite do dinossauro como "Em pé";
+			'''
+			Se for pressionado (↓ ou S) e não (↑ ou W):
+				Se o dinossauro não estiver colidindo com nada:
+					Define o srite do dinossauro como "Em pé";
+			Senão:
+				Define o srite do dinossauro como "Agachado";'''
 			if(key[ctrlKeys[1]] and not(key[ctrlKeys[0]])):
 				if(not(dino.dinoCollision('B',diag[0]) or dino.dinoCollision('B',horz[0]) or dino.dinoCollision('B',diag[1]) or dino.dinoCollision('B',horz[4][0]) or dino.dinoCollision('B',horz[4][1]) or dino.dinoCollision('B',horz[5][0]) or dino.dinoCollision('B',horz[5][1]))):
 					dino.squat(1)
 				else:
 					dino.squat(0)
 
-
+			'''
+			Se o dinossauro encostar em um espinho ou tocar a chama ou cair do senário:
+				Declara que o nível não foi concluído;
+				Fecha a condicionaol de jogo;
+			Se o objeto pters existir:
+				Se o dinossauro colidir com o pterossauro:
+					Delay de 1/10 de segundo;
+					Declara que o nível não foi concluído;
+					Fecha a condicionaol de jogo;'''
 			if(dino.dinoCollision('B',horz[2]) or dino.dinoCollision('T',horz[2]) or (dino.getPos('x') <= 220 or\
 				dino.getPos('y') >= 600)):
 				levelPass = False
@@ -825,15 +883,44 @@ def game(lv,db,data,stg,pSet):
 					pygame.time.delay(100)
 					levelPass = False
 					ply = False
-
+			'''
+			Se a configuração "Draw Colliders" for 1:
+				Desenha a reta limite da chama;'''
 			if(data[5][stg[5]]):
 				pygame.draw.rect(Window,(255,54,0),[210,0,10,600])
 
+			'''
+			Se o dinossauro colidir de frente com algo:
+				O dinossauro para;
+			Senão:
+				Se o dinossauro não estiver pulando:
+					O dinossauro ganha 12 ciclos de pulo extra;'''
 			if(dino.dinoCollision('F',vert) or dino.dinoCollision('F',diag[2])):
 				dino.blocked(w.getSpeed())
 			else:
-				if(not(dino.isExe())): addStrengthJump = 12
+				if(not(dino.isExe())):
+					addStrengthJump = 12
 
+			'''
+			Se o dinossauro caminhar sobre uma rampa que sobe:
+				A imagem do dinossauro desloca para cima;
+				Se o pulo não foi reiniciado:
+					Permite o reinício as variáveis gravitacionais;
+				Define a execução do pulo como falsa;
+				Se o dinossauro não estiver pulando:
+					O pulo será definido com força 1;
+			Mas se o dinossauro não estiver tocando (O chão, rampa que desce, o topo do cogumelo vermelho ou o topo do cogumelo preto):
+				Nega o reinício as variáveis gravitacionais;
+				Define a execução do pulo como verdadeira;
+				Se o dinossauro não estiver pulando:
+					O pulo será definido com força 1;
+			Senão:
+				Se as variáveis gravitacionais não foram reiniciadas:
+					Define a execução do pulo como verdadeira;
+				Define a execução do pulo como verdadeira;
+				Se o dinossauro não estiver pulando:
+					O pulo será definido com força 1;
+				O dinossauro ganha 12 ciclos de pulo extra;'''
 			if(dino.dinoCollision('B',diag[0])):
 				dino.ramp(int(w.getSpeed()*1.03))
 				if(not(dino.isReseted())): resJump = True
@@ -849,6 +936,8 @@ def game(lv,db,data,stg,pSet):
 				if(not(dino.isExe())): strengthJump = 1
 				addStrengthJump = 12
 			
+			'''
+			'''
 			if(not(dino.dinoCollision('T',horz[1]) or dino.dinoCollision('T',horz[0]) or dino.dinoCollision('T',diag[2]) or dino.dinoCollision('F',horz[1]) or dino.dinoCollision('F',diag[2]))):
 				if(key[ctrlKeys[0]] and not(key[ctrlKeys[1]])):
 					if(not(dino.isExe())):
